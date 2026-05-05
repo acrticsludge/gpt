@@ -12,3 +12,6 @@ venv/
 .DS_Store
 *.pt
 checkpoints/
+gpt_env/Scripts/
+gpt_env/Lib/
+gpt_env/share/
