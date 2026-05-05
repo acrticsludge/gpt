@@ -74,9 +74,11 @@ def train(model, dataset, config, device, save_dir: str = "checkpoints"):
     model = model.to(device)
     model.train()
 
+    is_gpu = device.type == "cuda"
+    
     dataloader = torch.utils.data.DataLoader(
         dataset, batch_size=config.batch_size, shuffle=True, 
-        drop_last=True, num_workers=0, pin_memory=True
+        drop_last=True, num_workers=0, pin_memory=is_gpu
     )
 
     optimizer = create_optimizer(model, config)
@@ -85,7 +87,7 @@ def train(model, dataset, config, device, save_dir: str = "checkpoints"):
         config.learning_rate
     )
 
-    use_amp = device.type == "cuda"
+    use_amp = is_gpu
     scaler = torch.cuda.amp.GradScaler(enabled=use_amp) if use_amp else None
 
     step, total_loss = 0, 0.0
@@ -102,7 +104,10 @@ def train(model, dataset, config, device, save_dir: str = "checkpoints"):
             input_ids = input_ids.to(device, non_blocking=True)
             target_ids = target_ids.to(device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(enabled=use_amp):
+            if use_amp:
+                with torch.cuda.amp.autocast():
+                    _, loss = model(input_ids, targets=target_ids)
+            else:
                 _, loss = model(input_ids, targets=target_ids)
             loss = loss / config.grad_accum_steps
 
