@@ -15,3 +15,4 @@ checkpoints/
 gpt_env/Scripts/
 gpt_env/Lib/
 gpt_env/share/
+error.txt
