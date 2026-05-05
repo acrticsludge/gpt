@@ -14,7 +14,7 @@ class GPTConfig:
     learning_rate: float = 3e-4
     weight_decay: float = 0.1
     warmup_steps: int = 500
-    max_steps: int = 10000
+    max_steps: int = 5000
     batch_size: int = 8
     grad_accum_steps: int = 4
     betas: tuple = (0.9, 0.95)
