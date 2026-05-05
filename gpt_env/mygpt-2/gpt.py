@@ -1,7 +1,7 @@
-from .config import GPTConfig
-from .normalization import RMSNorm
-from .mlp import SwiGLU
-from .attention import MultiHeadAttention, create_causal_mask
+from config import GPTConfig
+from normalization import RMSNorm
+from mlp import SwiGLU
+from attention import MultiHeadAttention, create_causal_mask
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
