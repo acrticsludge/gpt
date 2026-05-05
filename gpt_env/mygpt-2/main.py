@@ -53,14 +53,16 @@ def main():
                      help="Device: cuda (GPU), cpu, or auto")
     parser.add_argument("--steps", type=int, default=5000, help="Max training steps")
     args = parser.parse_args()
-    
+
     device = setup_environment(args.device)
-    
-    from mygpt_2 import GPT, GPTConfig, SimpleTokenizer
-    from mygpt_2.train import create_dataset, train
+
+    from config import GPTConfig
+    from gpt import GPT
+    from tokenizer import SimpleTokenizer
+    from train import create_dataset, train
 
     is_gpu = device.type == "cuda"
-    
+
     config = GPTConfig(
         d_model=256 if is_gpu else 128,
         num_heads=8 if is_gpu else 4,
@@ -73,10 +75,10 @@ def main():
     )
 
     tokenizer = SimpleTokenizer()
-    
+
     print("\nLoading training data...")
-    texts = load_data()
-    dataset = create_dataset(texts[:500], tokenizer, config.max_seq_len)
+    texts = load_training_data(max_samples=500)
+    dataset = create_dataset(texts, tokenizer, config.max_seq_len)
     print(f"Dataset: {len(dataset):,} batches")
 
     print("\nInitializing model...")
@@ -84,9 +86,9 @@ def main():
     print(f"Model parameters: {model.get_num_params():,}")
 
     print(f"\nTraining on {device}...")
-    
+
     model = train(model, dataset, config, device, save_dir="/content/checkpoints")
-    
+
     print("\nSaving final model...")
     torch.save(model.state_dict(), "/content/gpt_model.pt")
     print("Done!")
