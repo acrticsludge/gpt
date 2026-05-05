@@ -42,6 +42,8 @@ def load_data():
 
 
 def main():
+    import sys
+    sys.argv = [a for a in sys.argv if not a.startswith("-f")]
     parser = argparse.ArgumentParser(description="Train GPT-2 on Colab")
     parser.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu", "auto"],
                      help="Device: cuda (GPU), cpu, or auto")
