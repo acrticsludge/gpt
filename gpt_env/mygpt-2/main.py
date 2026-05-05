@@ -35,11 +35,14 @@ def setup_environment(device_name="cuda"):
         return torch.device("cpu")
 
 
-def load_data():
+def load_training_data(max_samples: int = None):
+    """Load WikiText-103 dataset - clean Wikipedia text."""
     from datasets import load_dataset
-    print("Loading WikiText-103 dataset...")
-    ds = load_dataset("wikitext", "wikitext-103-raw-v1", split="train")
-    texts = [item["text"] for item in ds if item["text"].strip()]
+    print("Loading dataset: wikitext-103-raw-v1...")
+    dataset = load_dataset("wikitext", "wikitext-103-raw-v1", split="train")
+    texts = [item["text"] for item in dataset if item["text"].strip()]
+    if max_samples:
+        texts = texts[:max_samples]
     print(f"Loaded {len(texts):,} documents")
     return texts
 
